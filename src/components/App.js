@@ -13,7 +13,8 @@ class App extends Component {
 
     this.state = {
       posts: [],
-      apiUrl: 'https://practiceapi.devmountain.com/api'
+      apiUrl: 'https://practiceapi.devmountain.com/api',
+      filterSearch: ''
     };
 
     this.updatePost = this.updatePost.bind( this );
@@ -63,17 +64,24 @@ class App extends Component {
     })
   }
 
+  filterSearch = (searchTerm) => {
+    this.setState({filterSearch: searchTerm.toLowerCase()});
+  }
+
   render() {
     const { posts } = this.state;
+    
     return (
       <div className="App__parent">
-        <Header />
+        <Header runFn={this.filterSearch} />
 
         <section className="App__content">
 
           <Compose createPostFn={this.createPost} />
           { 
-            posts.map( post => {
+            posts.filter( (element, index)  => {
+              return element.text.toLowerCase().includes(this.state.filterSearch);
+            }).map( post => {
               return(<Post key={post.id} text={post.text} date={post.date} deletePostFn={this.deletePost} updatePostFn={this.updatePost} id={post.id}/>)
             })
           }
